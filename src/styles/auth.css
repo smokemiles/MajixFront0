@@ -1,0 +1,214 @@
+/* Home Page Styles */
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2d1b4d 0%, #1a1a1a 100%);
+  padding: 2rem;
+}
+
+.home-content {
+  display: flex;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 600px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.brand-section {
+  flex: 1;
+  background: #ffffff;
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #2d1b4d;
+}
+
+.brand-title {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  background: linear-gradient(45deg, #8a2be2, #4b0082);
+  -webkit-text-fill-color: white;
+  .element {
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+}
+}
+
+.brand-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.auth-section {
+  flex: 1;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.auth-tab {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.auth-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-tab.active {
+  color: #ffffff;
+  background: rgba(138, 43, 226, 0.2);
+}
+
+.auth-form {
+  text-align: center;
+}
+
+.auth-form h2 {
+  color: rgba(126, 41, 206, 0.2);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.auth-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
+/* Existing Auth Styles */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2d1b4d 0%, #1a1a1a 100%);
+  padding: 2rem;
+}
+
+.auth-form-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  width: 80%;
+  /* max-width: 450px; */
+}
+
+.auth-form-container h2 {
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.auth-form-container .form-label {
+  color: #ffffff;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.auth-form-container .form-control {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.auth-form-container .form-control:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #8a2be2;
+  box-shadow: 0 0 0 0.2rem rgba(138, 43, 226, 0.25);
+  color: #ffffff;
+}
+
+.auth-form-container .btn-primary {
+  background: linear-gradient(45deg, #953ce9, #7301ba);
+  border: none;
+  padding: 0.75rem;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  color: #ddc6c6;
+  text-decoration: none;
+}
+
+.auth-form-container .btn-primary:hover {
+  background: linear-gradient(45deg, #8a2be2, #4b0082);
+  transform: translateY(-2px);
+}
+
+.auth-form-container .alert {
+  background: rgba(220, 53, 69, 0.2);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #ff6b6b;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .home-content {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .brand-section {
+    padding: 2rem;
+  }
+
+  .auth-section {
+    padding: 2rem;
+  }
+
+  .brand-title {
+    font-size: 2.5rem;
+  }
+} 
+
+.form-control {
+  width: 94%;
+}
+#switch {
+  margin-top: 1rem;
+  border: 1px solid;
+  border-radius: 6px !important;
+  border-color: rgb(85, 145, 85);
+  background: rgb(85, 145, 85);
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  
+}
+#switch:hover {
+  background: rgb(70, 120, 70);
+  border-color: rgb(70, 120, 70);
+}

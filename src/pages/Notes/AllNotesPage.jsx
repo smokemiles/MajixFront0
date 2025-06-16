@@ -1,36 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 import noteService from '../../services/noteService';
-import NoteCard from '../../components/notes/NoteCard';
-import TagFilter from '../../components/tags/TagFilter';
+import '../../styles/notes.css';
 
-const AllNotesPage = () => {
+const AllNotes = () => {
   const [notes, setNotes] = useState([]);
-  const [filterTag, setFilterTag] = useState(null);
+  const [error, setError] = useState('');
 
-  const fetchNotes = async () => {
+  useEffect(() => {
+    loadNotes();
+  }, []);
+
+  const loadNotes = async () => {
     try {
-      const response = await noteService.getNotes(filterTag);
-      setNotes(response.data);
-    } catch (error) {
-      console.error('Failed to fetch notes:', error);
+      const res = await noteService.getAllNotes();
+      setNotes(res.data);
+    } catch (err) {
+      setError('Failed to load notes.');
     }
   };
 
-  useEffect(() => {
-    fetchNotes();
-  }, [filterTag]);
-
   return (
-    <div className="container mt-4">
-      <h2 className="text-2xl font-semibold mb-4">All Notes</h2>
-      <TagFilter onSelect={setFilterTag} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {notes.map(note => (
-          <NoteCard key={note.id} note={note} />
-        ))}
+    <div className="notes-container">
+      <div className="notes-content">
+        <div className="notes-header">
+          <h2>My Notes</h2>
+          <Link to="/notes/create">
+            <Button variant="primary">Create New Note</Button>
+          </Link>
+        </div>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <div className="notes-grid">
+          {notes.map(note => (
+            <div key={note._id} className="note-card">
+              <h3>{note.title}</h3>
+              <p>{note.content.substring(0, 150)}...</p>
+              <div className="note-actions">
+                <Link to={`/notes/${note._id}`}>
+                  <Button variant="secondary">View</Button>
+                </Link>
+                <Link to={`/notes/${note._id}/edit`}>
+                  <Button variant="primary">Edit</Button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
-export default AllNotesPage;
+export default AllNotes;

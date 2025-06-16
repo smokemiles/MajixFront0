@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Auth Pages
+import HomePage from "./pages/Auth/HomePage";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage";
@@ -25,61 +26,42 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 const AppRoutes = () => {
   return (
     <>
-      <Navbar />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-4">
-          <Routes>
-            {/* Auth Routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Routes>
+        {/* Auth Routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-            {/* Notes Routes */}
-            <Route path="/" element={<Navigate to="/notes" replace />} />
-            <Route
-              path="/notes"
-              element={
-                <ProtectedRoute>
-                  <AllNotesPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/notes/:id"
-              element={
-                <ProtectedRoute>
-                  <NoteDetailPage />
-                </ProtectedRoute>
-              }
-            />
+        {/* Protected Routes */}
+        <Route
+          element={
+            <>
+              <Navbar />
+              <div className="flex">
+                <Sidebar />
+                <main className="flex-1 p-4">
+                  <ProtectedRoute />
+                </main>
+              </div>
+              <Footer />
+            </>
+          }
+        >
+          {/* Notes Routes */}
+          <Route path="/notes" element={<AllNotesPage />} />
+          <Route path="/notes/:id" element={<NoteDetailPage />} />
 
-            {/* Tags Routes */}
-            <Route
-              path="/tags"
-              element={
-                <ProtectedRoute>
-                  <AllTagsPage />
-                </ProtectedRoute>
-              }
-            />
+          {/* Tags Routes */}
+          <Route path="/tags" element={<AllTagsPage />} />
 
-            {/* Profile Routes */}
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
+          {/* Profile Routes */}
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
 
-            {/* 404 Route */}
-            <Route path="*" element={<Navigate to="/notes" replace />} />
-          </Routes>
-        </main>
-      </div>
-      <Footer />
+        {/* 404 Route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 };

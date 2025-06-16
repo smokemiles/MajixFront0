@@ -1,74 +1,92 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import noteService from "../../services/noteService";
-import tagService from "../../services/tagService";
+import React, { useState, useEffect } from 'react';
+import { Form, Button } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
+import noteService from '../../services/noteService';
+import '../../styles/notes.css';
 
-const EditNotePage = () => {
-  const { id } = useParams();
-  const [note, setNote] = useState(null);
-  const [tags, setTags] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
+const EditNote = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [form, setForm] = useState({ title: '', content: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    noteService.getNoteById(id).then((res) => {
-      setNote(res.data);
-      setSelectedTags(res.data.tags.map((tag) => tag.id));
-    });
-    tagService.getAllTags().then((res) => setTags(res.data));
+    loadNote();
   }, [id]);
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
+  const loadNote = async () => {
     try {
-      await noteService.updateNote(id, {
-        title: note.title,
-        content: note.content,
-        tags: selectedTags,
-      });
-      navigate(`/notes/${id}`);
+      const res = await noteService.getNote(id);
+      setForm({ title: res.data.title, content: res.data.content });
+      setLoading(false);
     } catch (err) {
-      console.error(err);
+      setError('Failed to load note.');
+      setLoading(false);
     }
   };
 
-  if (!note) return <div>Loading...</div>;
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setError('');
+    try {
+      await noteService.updateNote(id, form);
+      navigate('/notes');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to update note.');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="notes-container">
+        <div className="notes-content">
+          <div className="alert">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container py-4">
-      <h2 className="text-xl font-bold mb-4">Edit Note</h2>
-      <form onSubmit={handleUpdate} className="space-y-4">
-        <input
-          type="text"
-          className="form-control"
-          value={note.title}
-          onChange={(e) => setNote({ ...note, title: e.target.value })}
-          required
-        />
-        <textarea
-          className="form-control"
-          rows={6}
-          value={note.content}
-          onChange={(e) => setNote({ ...note, content: e.target.value })}
-        />
-        <select
-          multiple
-          className="form-select"
-          value={selectedTags}
-          onChange={(e) =>
-            setSelectedTags([...e.target.selectedOptions].map((o) => o.value))
-          }
-        >
-          {tags.map((tag) => (
-            <option key={tag.id} value={tag.id}>
-              {tag.name}
-            </option>
-          ))}
-        </select>
-        <button className="btn btn-success">Update</button>
-      </form>
+    <div className="notes-container">
+      <div className="notes-content">
+        <div className="notes-header">
+          <h2>Edit Note</h2>
+        </div>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <div className="note-form">
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Content</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="content"
+                value={form.content}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <div className="note-actions">
+              <Button type="submit" variant="primary">Update Note</Button>
+              <Button variant="secondary" onClick={() => navigate('/notes')}>Cancel</Button>
+            </div>
+          </Form>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default EditNotePage;
+export default EditNote;

@@ -1,69 +1,65 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import noteService from "../../services/noteService";
-import tagService from "../../services/tagService";
+import React, { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import noteService from '../../services/noteService';
+import '../../styles/notes.css';
 
-const CreateNotePage = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
+const CreateNote = () => {
   const navigate = useNavigate();
+  const [form, setForm] = useState({ title: '', content: '' });
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    tagService.getAllTags().then((res) => setTags(res.data));
-  }, []);
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
+    setError('');
     try {
-      await noteService.createNote({
-        title,
-        content,
-        tags: selectedTags,
-      });
-      navigate("/notes");
+      await noteService.createNote(form);
+      navigate('/notes');
     } catch (err) {
-      console.error(err);
+      setError(err.response?.data?.error || 'Failed to create note.');
     }
   };
 
   return (
-    <div className="container py-4">
-      <h2 className="text-xl font-bold mb-4">Create New Note</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <textarea
-          className="form-control"
-          placeholder="Content"
-          rows={6}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <select
-          multiple
-          className="form-select"
-          onChange={(e) =>
-            setSelectedTags([...e.target.selectedOptions].map((o) => o.value))
-          }
-        >
-          {tags.map((tag) => (
-            <option value={tag.id} key={tag.id}>
-              {tag.name}
-            </option>
-          ))}
-        </select>
-        <button className="btn btn-primary">Create</button>
-      </form>
+    <div className="notes-container">
+      <div className="notes-content">
+        <div className="notes-header">
+          <h2>Create New Note</h2>
+        </div>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <div className="note-form">
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Content</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="content"
+                value={form.content}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <div className="note-actions">
+              <Button type="submit" variant="primary">Create Note</Button>
+              <Button variant="secondary" onClick={() => navigate('/notes')}>Cancel</Button>
+            </div>
+          </Form>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default CreateNotePage;
+export default CreateNote;

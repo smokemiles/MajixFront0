@@ -3,6 +3,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import authService from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
+import '../../styles/auth.css';
 
 const Login = () => {
   const { setCurrentUser } = useContext(AuthContext);
@@ -25,20 +26,23 @@ const Login = () => {
   };
 
   return (
-    <div className="container max-w-md mt-5">
-      <h2 className="mb-4">Login</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control type="email" name="email" value={form.email} onChange={handleChange} required />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control type="password" name="password" value={form.password} onChange={handleChange} required />
-        </Form.Group>
-        <Button type="submit" variant="primary" className="w-full">Login</Button>
-      </Form>
+    <div className="auth-container">
+      <div className="auth-form-container">
+        <h2>Login</h2>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="email" name="email" value={form.email} onChange={handleChange} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" name="password" value={form.password} onChange={handleChange} required />
+          </Form.Group>
+          <Button type="submit" variant="primary">Login</Button>
+          <Button id='switch' variant="link" onClick={() => navigate('/register')}>Register</Button>
+        </Form>
+      </div>
     </div>
   );
 };

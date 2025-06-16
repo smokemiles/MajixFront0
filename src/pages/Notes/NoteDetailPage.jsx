@@ -1,41 +1,88 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
 import noteService from '../../services/noteService';
+import '../../styles/notes.css';
 import TagBadge from '../../components/tags/TagBadge';
 
-const NoteDetailPage = () => {
+const NoteDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [note, setNote] = useState(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchNote = async () => {
-      try {
-        const response = await noteService.getNoteById(id);
-        setNote(response.data);
-      } catch (error) {
-        console.error('Failed to fetch note:', error);
-      }
-    };
-
-    fetchNote();
+    loadNote();
   }, [id]);
 
-  if (!note) return <div className="text-center mt-5">Loading...</div>;
+  const loadNote = async () => {
+    try {
+      const res = await noteService.getNote(id);
+      setNote(res.data);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to load note.');
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this note?')) {
+      try {
+        await noteService.deleteNote(id);
+        navigate('/notes');
+      } catch (err) {
+        setError('Failed to delete note.');
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="notes-container">
+        <div className="notes-content">
+          <div className="alert">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!note) {
+    return (
+      <div className="notes-container">
+        <div className="notes-content">
+          <div className="alert alert-danger">Note not found.</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mt-4">
-      <h2 className="text-3xl font-bold mb-2">{note.title}</h2>
-      <div className="mb-2 text-muted text-sm">{new Date(note.created_at).toLocaleString()}</div>
-      <div className="mb-3">{note.content}</div>
-      {note.tags && note.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {note.tags.map(tag => (
-            <TagBadge key={tag.id} name={tag.name} />
-          ))}
+    <div className="notes-container">
+      <div className="notes-content">
+        <div className="notes-header">
+          <h2>{note.title}</h2>
+          <div className="note-actions">
+            <Button variant="primary" onClick={() => navigate(`/notes/${id}/edit`)}>Edit</Button>
+            <Button variant="secondary" onClick={() => navigate('/notes')}>Back</Button>
+            <Button variant="danger" onClick={handleDelete}>Delete</Button>
+          </div>
         </div>
-      )}
+        {error && <div className="alert alert-danger">{error}</div>}
+        <div className="note-card">
+          <p>{note.content}</p>
+        </div>
+        {note.tags && note.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {note.tags.map(tag => (
+              <TagBadge key={tag.id} name={tag.name} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default NoteDetailPage;
+export default NoteDetail;
